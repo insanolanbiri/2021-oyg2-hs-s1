@@ -14,6 +14,6 @@ y=df.maas.values.reshape(-1,1)
 lr.fit(X,y)
 a=lr.coef_
 b=lr.intercept_
-print(f"{a}x+{b}")
+print(f"{a[0][0]}x+{b[0]}")
 
 # print(X)
