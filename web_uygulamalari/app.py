@@ -23,7 +23,7 @@ def liste():
     file=""
     try:
         kisiler=[]
-        yol=os.path.join(os.getcwd(),"kayitlar.csv")
+        yol=os.path.join(os.getcwd(),"flask","2021-oyg2-hs-s1","web_uygulamalari","kayitlar.csv")
         file=open(yol, 'r', encoding="utf-8")
         reader=csv.reader(file)
         kisiler=list(reader)
@@ -48,7 +48,7 @@ def kaydet():
     if not (ad and soyad and program):
         return render_template("kayit_formu.html",hata="bilgiler eksik",sayfa_adi="liste - hata | insanolanbiri")
     try:
-        yol=os.path.join(os.getcwd(),"kayitlar.csv")
+        yol=os.path.join(os.getcwd(),"flask","2021-oyg2-hs-s1","web_uygulamalari","kayitlar.csv")
         file=open(yol, 'a+', newline='', encoding="utf-8")
         writer = csv.writer(file)
         writer.writerow((ad.capitalize(),soyad.upper(),program))
