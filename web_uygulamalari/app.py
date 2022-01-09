@@ -8,7 +8,7 @@ app=Flask(__name__)
 def index():
     deger=request.args.get("isim","tanımsız")
     deger2=request.args.get("soyisim","tanımsızoğulları")
-    return render_template("index.html",ad=deger,soyad=deger2)
+    return render_template("index.html",ad=deger,soyad=deger2,sayfa_adi="insanolanbiri")
 
 
 
@@ -31,13 +31,13 @@ def liste():
         kisiler=["bir", "şey", "oldu"]
     finally:
         if file: file.close()
-    return render_template("liste.html",kisiler=kisiler)
+    return render_template("liste.html",kisiler=kisiler,sayfa_adi="liste | insanolanbiri")
 
 
 
 @app.route("/kayit")
 def kayit():
-    return render_template("kayit_formu.html",hata="henüz hata yok")
+    return render_template("kayit_formu.html",hata="henüz hata yok",sayfa_adi="kayıt | insanolanbiri")
 
 
 
@@ -46,14 +46,14 @@ def kaydet():
     file=""
     ad,soyad,program=request.form.get("ad"),request.form.get("soyad"),request.form.get("program")
     if not (ad and soyad and program):
-        return render_template("kayit_formu.html",hata="bilgiler eksik")
+        return render_template("kayit_formu.html",hata="bilgiler eksik",sayfa_adi="liste - hata | insanolanbiri")
     try:
         yol=os.path.join(os.getcwd(),"kayitlar.csv")
         file=open(yol, 'a+', newline='', encoding="utf-8")
         writer = csv.writer(file)
         writer.writerow((ad.capitalize(),soyad.upper(),program))
     except:
-        return render_template("kayit_formu.html",hata="veri kaydedilemedi")
+        return render_template("kayit_formu.html",hata="veri kaydedilemedi",sayfa_adi="liste - hata | insanolanbiri")
     finally:
         if file: file.close()
     return redirect(url_for('kayit'))
