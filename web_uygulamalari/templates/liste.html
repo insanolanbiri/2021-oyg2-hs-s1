@@ -1,0 +1,26 @@
+{% extends "sablon.html" %}
+{% block header%}
+liste
+{% endblock %}
+
+{% block article%}
+
+<table>
+    <tr>
+        <th>{{ kisiler[0][0] }}</th>
+        <th>{{ kisiler[0][1] }}</th>
+        <th>{{ kisiler[0][2] }}</th>
+    </tr>
+    {% for kisi in kisiler[1:] %}
+    <tr>
+        <td>{{ kisi[0] }}</td>
+        <td>{{ kisi[1] }}</td>
+        <td>{{ kisi[2] }}</td>
+    </tr>
+    {% endfor %}
+</table> 
+{% endblock %}
+
+{% block footer%}
+burası footer şeysi
+{% endblock %}

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<title>{{ sayfa_adi}}</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="/static/style.css">
+<link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/static/favicon.png">
+</head>
+<body>
+
+  <header>
+  <h2>
+    {% block header %}
+    {% endblock %}
+  </h2>
+</header>
+
+<section>
+  <nav>
+    <ul>
+      <li><a href="/">ana sayfa</a></li>
+      <li><a href="/kayit">kayıt formu</a></li>
+      <li><a href="/liste">liste</a></li>
+    </ul>
+  </nav>
+  
+  <article>
+    {% block article %}
+    {% endblock %}
+  </article>
+</section>
+
+<footer>
+  <h6>
+    {% block footer %}
+    {% endblock %}
+  </h6>
+  
+</footer>
+
+</body>
+</html>
+
