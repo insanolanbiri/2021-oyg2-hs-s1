@@ -1,0 +1,20 @@
+{% extends 'sablon.html' %}
+{% block header%}
+burası grafik şeysi
+{% endblock %}
+
+{% block article%}
+<form action="/grafik" method="post" autocomplete="off">
+    <label for="X">X:</label><br>
+    <input type="text" id="X" name="X" value="" required><br>
+    <label for="Y">Y:</label><br>
+    <input type="text" id="Y" name="Y" value="" required><br><br>
+    <label for="program">Program:</label>
+    <input type="submit" value="Çizdir">
+</form>
+{{ resim|safe }}
+{% endblock %}
+
+{% block footer%}
+burası footer şeysi
+{% endblock %}

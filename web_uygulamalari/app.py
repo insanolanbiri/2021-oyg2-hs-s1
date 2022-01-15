@@ -1,5 +1,6 @@
-from flask import Flask, render_template, request, redirect, url_for
-import csv, os
+from flask import Flask, render_template, request, redirect, url_for, make_response
+from datetime import datetime
+import csv, os, numpy as np, matplotlib.pyplot as plt, io, base64
 app=Flask(__name__)
 
 
@@ -8,7 +9,13 @@ app=Flask(__name__)
 def index():
     deger=request.args.get("isim","tanımsız")
     deger2=request.args.get("soyisim","tanımsızoğulları")
-    return render_template("index.html",ad=deger,soyad=deger2,sayfa_adi="insanolanbiri")
+    if request.cookies.get("tarih"):
+        tarih=request.cookies.get("tarih")
+        return render_template("index.html",ad=deger,soyad=deger2,tarih=tarih,sayfa_adi="insanolanbiri")
+    else:
+        res=make_response(render_template("index.html",ad=deger,soyad=deger2,tarih="çerez yok",sayfa_adi="insanolanbiri"))
+        res.set_cookie("tarih",datetime.now().strftime("%d %B %Y - %H:%M:%S"),max_age=2*24*60*60)
+        return res
 
 
 
@@ -23,7 +30,7 @@ def liste():
     file=""
     try:
         kisiler=[]
-        yol=os.path.join(os.getcwd(),"flask","2021-oyg2-hs-s1","web_uygulamalari","kayitlar.csv")
+        yol=os.path.join(os.getcwd(),"kayitlar.csv")
         file=open(yol, 'r', encoding="utf-8")
         reader=csv.reader(file)
         kisiler=list(reader)
@@ -46,19 +53,38 @@ def kaydet():
     file=""
     ad,soyad,program=request.form.get("ad"),request.form.get("soyad"),request.form.get("program")
     if not (ad and soyad and program):
-        return render_template("kayit_formu.html",hata="bilgiler eksik",sayfa_adi="liste - hata | insanolanbiri")
+        return render_template("kayit_formu.html",hata="bilgiler eksik",sayfa_adi="kayıt | insanolanbiri")
     try:
-        yol=os.path.join(os.getcwd(),"flask","2021-oyg2-hs-s1","web_uygulamalari","kayitlar.csv")
+        yol=os.path.join(os.getcwd(),"kayitlar.csv")
         file=open(yol, 'a+', newline='', encoding="utf-8")
         writer = csv.writer(file)
-        writer.writerow((ad.capitalize(),soyad.upper(),program))
+        writer.writerow((ad,soyad,program))
     except:
-        return render_template("kayit_formu.html",hata="veri kaydedilemedi",sayfa_adi="liste - hata | insanolanbiri")
+        return render_template("kayit_formu.html",hata="veri kaydedilemedi",sayfa_adi="kayıt | insanolanbiri")
     finally:
         if file: file.close()
     return redirect(url_for('kayit'))
 
+@app.route("/grafik",methods=["GET","POST"])
+def grafik():
+    if request.method=="GET":
+        return render_template("grafik.html",resim="<p>henüz grafik yok</p>",sayfa_adi="grafik | insanolanbiri")
+    else:
+        csx,csy=request.form.get("X"),request.form.get("Y")
+        xlist=csx.split(",")
+        xlist=[float(i) for i in xlist]
 
+        ylist=csy.split(",")
+        ylist=[float(i) for i in ylist]
+
+        array=np.column_stack((xlist,ylist))
+        print(array)
+        plt.plot(xlist,ylist)
+        img = io.BytesIO()
+        plt.savefig(img, format='png', bbox_inches='tight')
+        img.seek(0)
+        html_resim = '<img src="data:image/png;base64, {}">'.format(base64.b64encode(img.getvalue()).decode('utf-8'))
+        return render_template("grafik.html",resim=html_resim,sayfa_adi="grafik | insanolanbiri")
 
 
 @app.errorhandler(404)
