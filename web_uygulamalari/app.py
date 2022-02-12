@@ -76,9 +76,7 @@ def grafik():
 
         ylist=csy.split(",")
         ylist=[float(i) for i in ylist]
-
-        array=np.column_stack((xlist,ylist))
-        print(array)
+        
         plt.plot(xlist,ylist)
         img = io.BytesIO()
         plt.savefig(img, format='png', bbox_inches='tight')
