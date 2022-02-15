@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, make_respo
 from datetime import datetime
 import csv, os, numpy as np, matplotlib.pyplot as plt, io, base64, locale
 
-
+os.environ['TZ'] = 'Europe/Istanbul'
 locale.setlocale(locale.LC_TIME,'tr_TR.utf-8')
 app=Flask(__name__)
 
