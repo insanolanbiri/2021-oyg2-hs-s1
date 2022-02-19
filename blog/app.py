@@ -6,4 +6,8 @@ app=Flask(__name__)
 
 @app.route("/")
 def anasayfa():
-    return "<b>anasayfa</b>"
+    return render_template("index.html",sayfa="insanolanbiri | blog")
+
+@app.errorhandler(404)
+def e404(hata):
+    return f"yok ki öyle bişey :( <hr style=\"margin-top: 50px;\"> {hata}"

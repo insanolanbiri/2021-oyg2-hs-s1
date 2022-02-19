@@ -71,14 +71,17 @@ def grafik():
     if request.method=="GET":
         return render_template("grafik.html",resim="<p>henüz grafik yok</p>",sayfa_adi="grafik | insanolanbiri")
     else:
-        csx,csy=request.form.get("X"),request.form.get("Y")
-        xlist=csx.split(",")
-        xlist=[float(i) for i in xlist]
-
-        ylist=csy.split(",")
-        ylist=[float(i) for i in ylist]
-        
-        plt.plot(xlist,ylist)
+        try:
+            csx,csy=request.form.get("X"),request.form.get("Y")
+            xlist=csx.split(",")
+            xlist=[float(i) for i in xlist]
+            ylist=csy.split(",")
+            ylist=[float(i) for i in ylist]
+            plt.plot(xlist,ylist)
+        except ValueError:
+            return render_template("grafik.html",resim="<p>doğru düzgün gir</p>",sayfa_adi="grafik | insanolanbiri")
+        except:
+            return render_template("grafik.html",resim="<p>bir şey oldu</p>",sayfa_adi="grafik | insanolanbiri")
         img = io.BytesIO()
         plt.savefig(img, format='png', bbox_inches='tight')
         img.seek(0)
