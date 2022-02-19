@@ -1,5 +1,3 @@
-from crypt import methods
-import re
 from flask import Flask, render_template, request
 import sqlite3, os
 
