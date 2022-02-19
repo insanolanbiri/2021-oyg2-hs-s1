@@ -1,4 +1,33 @@
 {% extends 'sablon.html' %}
 {% block article %}
-    <p>yazar</p>
+    <table>
+        <tr>
+            <th>id</th>
+            <th>ad</th>
+            <th>soyad</th>
+            <th>işlem</th>
+        </tr>
+        {% for yazar in yazarlar %}
+            <tr>
+                <td>{{ yazar[0] }}</td>
+                <td>{{ yazar[1] }}</td>
+                <td>{{ yazar[2] }}</td>
+                <td>
+                    <a href="/yazar_ekle?action=update&id={{ yazar[0] }}">güncelle</a>
+                    <a href="/yazar_ekle?action=delete&id={{ yazar[0] }}">sil</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+    <form action="/yazar_ekle" method="post">
+        <label for="id">id:</label> <br>
+        <input type="number" id="id" name="id" required="true" value="{{ id }}"> <br>
+        <label for="ad">ad:</label> <br>
+        <input type="text" id="ad" name="ad" required="true"> <br>
+        <label for="soyad">soyad</label>:</label> <br>
+        <input type="text" id="soyad" name="soyad" required="true"> <br>
+        
+        <input type="submit" value="{{ buton }}"> <br>
+    </form>
+    {{ hata }}
 {% endblock article %}
