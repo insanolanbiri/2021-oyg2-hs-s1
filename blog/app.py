@@ -22,7 +22,7 @@ def yazar_ekle():
         try:
             DB=sqlite3.connect(db_yol)
             imlec=DB.cursor()
-            imlec.execute("insert or replace into yazar values(?,?,?)",[int(id),ad,soyad])#update yok şu an
+            imlec.execute("insert or replace into yazar values(?,?,?)",[int(id),ad,soyad])
             DB.commit()
         except: hata="bir şey oldu"
         finally: DB.close()
