@@ -1,4 +1,4 @@
-name: Python application
+name: python syntax check
 
 on:
   push:
@@ -11,10 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python 3.8
+    - name: set up python 3.8
       uses: actions/setup-python@v2
       with:
         python-version: "3.8"
-    - name: Compile python app
+    - name: compile python app
       run: |
         python3 -m compileall .
