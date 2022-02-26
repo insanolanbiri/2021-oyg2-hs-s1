@@ -14,19 +14,18 @@
                 <td>{{ yazar[2] }}</td>
                 <td>
                     <a href="/yazar_ekle?action=update&id={{ yazar[0] }}">güncelle</a>
-                    <a href="/yazar_ekle?action=delete&id={{ yazar[0] }}">sil</a>
+                    <a href="/yazar_sil?id={{ yazar[0] }}">sil</a>
                 </td>
             </tr>
         {% endfor %}
     </table>
     <form action="/yazar_ekle" method="post">
         <label for="id">id:</label> <br>
-        <input type="number" id="id" name="id" required="true" value="{{ id }}"> <br>
+        <input type="number" id="id" name="id" required="true" value="{{ kisi[0] }}" {% if kisi[0] %} disabled{% endif %}> <br>
         <label for="ad">ad:</label> <br>
-        <input type="text" id="ad" name="ad" required="true"> <br>
+        <input type="text" id="ad" name="ad" required="true" value="{{ kisi[1] }}"> <br>
         <label for="soyad">soyad</label>:</label> <br>
-        <input type="text" id="soyad" name="soyad" required="true"> <br>
-        
+        <input type="text" id="soyad" name="soyad" required="true" value="{{ kisi[2] }}"> <br>
         <input type="submit" value="{{ buton }}"> <br>
     </form>
     {{ hata }}
