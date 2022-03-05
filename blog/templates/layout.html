@@ -47,7 +47,7 @@
                                     d="M6 12.5a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v2a.5.5 0 0 1-1 0v-2A1.5 1.5 0 0 1 6.5 2h8A1.5 1.5 0 0 1 16 3.5v9a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 5 12.5v-2a.5.5 0 0 1 1 0v2z" />
                                 <path fill-rule="evenodd"
                                     d="M.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L1.707 7.5H10.5a.5.5 0 0 1 0 1H1.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z" />
-                            </svg>Çıkış
+                            </svg>Çıkış ({{ session["username"] }})
                         </a>
                     </li>
                     {% else %}
@@ -74,7 +74,7 @@
         <div class="container">
 
             <div class="text-center my-5">
-                <h1 class="fw-bolder">Bloğuma Hoşgeldiniz. </h1>
+                <h1 class="fw-bolder">Bloğuma Hoşgeldiniz</h1>
                 <p class="lead mb-0">Bilşim Teknolojileri ve Yazılım</p>
             </div>
 
@@ -93,14 +93,14 @@
                 <nav aria-label="Pagination">
                     <hr class="my-0" />
                     <ul class="pagination justify-content-center my-4">
-                        <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1" aria-disabled="true">Newer</a>
+                        <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1" aria-disabled="true">Yeni</a>
                         </li>
                         <li class="page-item active" aria-current="page"><a class="page-link" href="#!">1</a></li>
                         <li class="page-item"><a class="page-link" href="#!">2</a></li>
                         <li class="page-item"><a class="page-link" href="#!">3</a></li>
                         <li class="page-item disabled"><a class="page-link" href="#!">...</a></li>
                         <li class="page-item"><a class="page-link" href="#!">15</a></li>
-                        <li class="page-item"><a class="page-link" href="#!">Older</a></li>
+                        <li class="page-item"><a class="page-link" href="#!">Eski</a></li>
                     </ul>
                 </nav>
 
@@ -113,7 +113,7 @@
                     <div class="card-header">Arama</div>
                     <div class="card-body">
                         <div class="input-group">
-                            <input class="form-control" type="text" placeholder="Arama metni giriniz..." aria-label="Enter search term..." aria-describedby="button-search" />
+                            <input class="form-control" type="text" placeholder="Arama metni giriniz" aria-label="Enter search term..." aria-describedby="button-search" />
                             <button class="btn btn-primary" id="button-search" type="button">Ara!</button>
                         </div>
                     </div>
