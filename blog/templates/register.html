@@ -1,0 +1,13 @@
+{% extends 'layout.html' %} {% block article %} {% from "includes/formhelpers.html" import render_field %}
+
+
+
+<form method="post">
+    {{ render_field(form.username,class = "form-control") }} {{ render_field(form.email,class = "form-control") }} {{ render_field(form.password,class = "form-control") }} {{ render_field(form.confirm,class = "form-control") }} {{ form.submit(class="btn btn-primary")
+    }}
+
+</form>
+{% if durum %}
+<div class="alert alert-info">
+    <strong>Bilgi!</strong> {{durum}}
+</div> {% endif %} {% endblock %}

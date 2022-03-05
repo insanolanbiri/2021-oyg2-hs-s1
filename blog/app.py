@@ -1,72 +1,146 @@
-from flask import Flask, render_template, request, redirect
-import sqlite3, os
+from flask import (
+    Flask,
+    flash,
+    render_template,
+    Response,
+    request,
+    redirect,
+    url_for,
+    session,
+    logging,
+)
+from passlib.hash import sha256_crypt
+from . import app, db
+from .forms import RegisterForm, LoginForm, ArticleAddForm
+from .models import User, Tag, Article, Article_Tag
+from functools import wraps
+from datetime import datetime
 
-db_yol=os.path.join(os.getcwd(),"yazilar.db")
+# Kullanıcı Giriş Decorator'ı
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if "logged_in" in session:
+            return f(*args, **kwargs)
+        else:
+            flash("Bu sayfayı görüntülemek için lütfen giriş yapın.", "danger")
+            return redirect(url_for("login"))
 
-app=Flask(__name__)
+    return decorated_function
 
-@app.route("/")
-def anasayfa():
-    return render_template("index.html",sayfa="insanolanbiri | blog")
 
-@app.route("/yazar_ekle",methods=["GET","POST"])
-def yazar_ekle():
-    hata=""
-    kisi=["","",""]
-    if request.method=="POST":
-        id=request.form.get("id")
-        ad=request.form.get("ad")
-        soyad=request.form.get("soyad")
-        if not(id or ad or soyad):
-            return render_template("yazar.html",hata="doğru düzgün gir",buton="ekle")
+# Kullanıcı Giriş Decorator'ı
+@app.route("/", methods=["GET", "POST"])
+def index():
+    a = request.args.get("a")
+
+    return render_template("index.html")
+
+
+@app.route("/test")
+def test():
+    return render_template("test.html")
+
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+
+    form = RegisterForm(request.form)
+    # form.yetki.choices=[(kullanici.email,kullanici.username) for kullanici in User.query.all()]#[(kullanici.email,kullanici.username) for kullanici in User.query.all()]
+    if request.method == "POST" and form.validate():
+        username = form.username.data
+        password = sha256_crypt.encrypt(form.password.data)
+        email = form.email.data
+        yeniKayit = User(
+            username=username, email=email, password=password, permission=0
+        )
         try:
-            DB=sqlite3.connect(db_yol)
-            imlec=DB.cursor()
-            imlec.execute("insert or replace into yazar values(?,?,?)",[int(id),ad,soyad])
-            DB.commit()
-        except: hata="bir şey oldu"
-        finally: DB.close()
+            db.session.add(yeniKayit)
+            db.session.commit()
+            flash("Kayıt Başarılı", "success")
+            return redirect(url_for("login"))
+        except Exception as e:
+            flash("Bu Kullanıcı Adı Zaten Kullanılıyor veya kayıt hatası", "danger")
+            return redirect(url_for("register"))
+
     else:
-        action=request.args.get("action")
-        id=request.args.get("id")
-        if action=="update" and id:
-            try:
-                DB=sqlite3.connect(db_yol)
-                imlec=DB.cursor()
-                imlec.execute("select * from yazar where id=?",[int(id)])
-                kisi=imlec.fetchone()
-            except: hata="bir şey oldu"
-            finally: DB.close()
-    DB=sqlite3.connect(db_yol)
-    imlec=DB.cursor()
-    imlec.execute("select * from yazar")
-    yazarlar=imlec.fetchall()
-    DB.close()
-    return render_template("yazar.html",hata=hata,yazarlar=yazarlar,kisi=kisi,buton="ekle/güncelle",sayfa="insanolanbiri | yazar ekle")
+        return render_template("register.html", form=form)
 
-@app.route("/yazar_sil")
-def yazar_sil():
-    id=request.args.get("id")
-    if id:
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    form = LoginForm(request.form)
+    if request.method == "POST":
+        name = request.form["username"]
+        passw = request.form["password"]
+        bilgi = User.query.filter_by(username=name).first()
+        if bilgi is not None:
+            g_passw = bilgi.password
+            if sha256_crypt.verify(passw, g_passw):
+                session["logged_in"] = True
+                session["username"] = name
+                return render_template("index.html", durum="Giriş Başarılı")
+            else:
+                return render_template(
+                    "login.html", form=form, durum="parolanızı kontrol ediniz"
+                )
+
+        else:
+
+            return render_template(
+                "login.html", form=form, durum="Böyle bir kullanıcı yok"
+            )
+    else:
+        return render_template("login.html", form=form, durum="")
+
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("index"))
+
+
+@app.route("/about")
+def about():
+    return render_template("about.html")
+
+
+@app.route("/contact")
+def contact():
+    return render_template("contact.html")
+
+
+@app.route("/admin")
+@login_required
+def admin():
+    return render_template("admin.html")
+
+
+@app.route("/article_add", methods=["GET", "POST"])
+@login_required
+def article_add():
+
+    form = ArticleAddForm(request.form)
+    form.tags.choices = [
+        (tag.name, tag.name) for tag in Tag.query.all()
+    ]  # [(kullanici.email,kullanici.username) for kullanici in User.query.all()]
+
+    if request.method == "POST" and form.validate() and len(form.tags.data) > 0:
+        time = datetime.utcnow()
+        title = form.title.data
+        content = form.content.data
+        username = session["username"]
         try:
-            DB=sqlite3.connect(db_yol)
-            imlec=DB.cursor()
-            imlec.execute("delete from yazar where id=?",[int(id)])
-            DB.commit()
-        finally: DB.close()
-    return redirect("/yazar_ekle")
+            db.session.add(
+                Article(time=time, title=title, content=content, username=username)
+            )
+            for tag in form.tags.data:
+                db.session.add(Article_Tag(time=time, tag_name=tag))
+            db.session.commit()
+            return render_template("article_add.html", form=form, durum="Kayıt eklendi")
 
+        except Exception as e:
 
-@app.route("/konu_ekle",methods=["GET","POST"])
-def konu_ekle():
-    return render_template("konu.html",sayfa="insanolanbiri | konu ekle")
-
-
-@app.route("/yazi_ekle",methods=["GET","POST"])
-def yazi_ekle():
-    return render_template("yazi.html",sayfa="insanolanbiri | yazı ekle")
-
-
-@app.errorhandler(404)
-def e404(hata):
-    return f"yok ki öyle bişey :( <hr style=\"margin-top: 50px;\"> {hata}"
+            return render_template("article_add.html", form=form, durum="Hata oluştu")
+    else:
+        return render_template("article_add.html", form=form, durum="")
