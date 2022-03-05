@@ -12,4 +12,4 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:////" + os.path.join(
 app.config["SECRET_KEY"] = os.urandom(32)
 db = SQLAlchemy(app)
 db.create_all()
-import app
+#import app
