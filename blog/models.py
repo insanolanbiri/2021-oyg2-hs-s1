@@ -1,4 +1,4 @@
-from . import db
+from __init__ import db
 
 # db sınıfları
 class User(db.Model):

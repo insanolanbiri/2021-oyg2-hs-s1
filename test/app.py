@@ -52,7 +52,7 @@ class RegisterForm(Form):
         "parola", validators=[validators.DataRequired("boş olmaz")]
     )
     confirm = PasswordField(
-        "bi daha parola", validators=[validators.DataRequired("boş olmaz")]
+        "bi daha parola", validators=[validators.DataRequired("boş olmaz"),validators.EqualTo(password,"aynı gir")]
     )
     submit = SubmitField("kayıt")
 
@@ -60,4 +60,16 @@ class RegisterForm(Form):
 @app.route("/", methods=["GET", "POST"])
 def index():
     form = RegisterForm(request.form)
-    return render_template("index.html", form=form)
+    if form.validate and request.method=="POST":
+        username=form.username.data
+        email=form.email.data
+        password=username+form.password.data
+        kayit=User(username=username,email=email,password=password)
+        try:
+            db.session.add(kayit)
+            db.session.commit()
+            return render_template("index.html", form=form,status="başarılı")
+        except Exception as e:
+            return render_template("index.html", form=form,status=f"bir şey oldu: {e}")
+    else:
+        return render_template("index.html", form=form,status="")
