@@ -10,9 +10,9 @@ from flask import (
     logging,
 )
 from passlib.hash import sha256_crypt
-from . import app, db
-from .forms import RegisterForm, LoginForm, ArticleAddForm
-from .models import User, Tag, Article, Article_Tag
+from blog import app, db
+from blog.forms import RegisterForm, LoginForm, ArticleAddForm
+from blog.models import User, Tag, Article, Article_Tag
 from functools import wraps
 from datetime import datetime
 

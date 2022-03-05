@@ -1,4 +1,4 @@
-from . import db
+from blog import db
 
 # db sınıfları
 class User(db.Model):
