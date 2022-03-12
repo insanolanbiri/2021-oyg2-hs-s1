@@ -7,8 +7,14 @@
     <title>Document</title>
 </head>
 <body>
+    {% if session["username"] and request.path not in ("/register","/login") %}
+        <h1>
+            {{ session["username"] }}  
+            <a href="/logout">çıkış</a> 
+        </h1>
+    {% endif %}
+
     {% block icerik %}
-        
     {% endblock icerik %}
 </body>
 </html>
