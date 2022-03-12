@@ -8,7 +8,7 @@
     <meta name="author" content="" />
     <title>insanolanbiri</title>
     <!-- Favicon-->
-    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='assets/favicon.png') }}" />
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='assets/favicon.ico') }}" />
     <!-- Core theme CSS (includes Bootstrap)-->
     <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet" />
 </head>
@@ -35,19 +35,28 @@
 
                     {% if session["logged_in"] %}
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/admin">Admin</a>
+                        <a {% if request.path=="/admin" %}class=" nav-link active" aria-current="page" {% else %}class="nav-link" {% endif %} href="/admin">Admin</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/article_add">yazıekle</a>
+                        <a {% if request.path=="/admin/articles" %}class=" nav-link active" aria-current="page" {% else %}class="nav-link" {% endif %} href="/admin/articles">Yazılar</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/logout">
+                        <a {% if request.path=="/admin/tags" %}class=" nav-link active" aria-current="page" {% else %}class="nav-link" {% endif %} href="/admin/tags">Etiketler</a>
+                    </li>
+                    <li class="nav-item">
+                        <a {% if request.path=="/admin/imgs" %}class=" nav-link active" aria-current="page" {% else %}class="nav-link" {% endif %} href="/admin/imgs">Etiketler</a>
+                    </li>
+                    <li class="nav-item">
+                        <a {% if request.path=="/admin/article_add" %}class=" nav-link active" aria-current="page" {% else %}class="nav-link" {% endif %} href="/admin/article_add">yazıekle</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/logout">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-left" viewBox="0 0 16 16">
                                 <path fill-rule="evenodd"
                                     d="M6 12.5a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v2a.5.5 0 0 1-1 0v-2A1.5 1.5 0 0 1 6.5 2h8A1.5 1.5 0 0 1 16 3.5v9a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 5 12.5v-2a.5.5 0 0 1 1 0v2z" />
                                 <path fill-rule="evenodd"
                                     d="M.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L1.707 7.5H10.5a.5.5 0 0 1 0 1H1.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z" />
-                            </svg>Çıkış ({{ session["username"] }})
+                            </svg>Çıkış
                         </a>
                     </li>
                     {% else %}
@@ -70,16 +79,16 @@
     <!-- Page header with logo and tagline-->
 
     <header class="py-5 bg-light border-bottom mb-4">
-
+        {% if request.path[0:6] !="/admin" %}
         <div class="container">
 
             <div class="text-center my-5">
-                <h1 class="fw-bolder">Bloğuma Hoşgeldiniz</h1>
+                <h1 class="fw-bolder">Bloğuma Hoşgeldiniz. </h1>
                 <p class="lead mb-0">Bilşim Teknolojileri ve Yazılım</p>
             </div>
 
         </div>
-
+        {% endif %}
     </header>
     <!-- Page content-->
     <div class="container">
@@ -93,27 +102,33 @@
                 <nav aria-label="Pagination">
                     <hr class="my-0" />
                     <ul class="pagination justify-content-center my-4">
-                        <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1" aria-disabled="true">Yeni</a>
+                        {% set yeni=p-1%}
+                        <li {% if p==1 %}class="page-item disabled" {% else %}class="page-item" {% endif %}><a class="page-link" href="/?p={{yeni}}" tabindex="-1" aria-disabled="true">Yeni</a>
                         </li>
-                        <li class="page-item active" aria-current="page"><a class="page-link" href="#!">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#!">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#!">3</a></li>
-                        <li class="page-item disabled"><a class="page-link" href="#!">...</a></li>
-                        <li class="page-item"><a class="page-link" href="#!">15</a></li>
-                        <li class="page-item"><a class="page-link" href="#!">Eski</a></li>
+                        {% for i in range(1,page_count+1) %} {% if i==p %}
+                        <li class="page-item active" aria-current="page">
+                            <a class="page-link" href="/?p={{i}}">{{i}}</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item">
+                            <a class="page-link" href="/?p={{i}}">{{i}}</a>
+                        </li>
+                        {% endif %} {% endfor %} {% set eski=p+1%}
+                        <li {% if page_count==p %}class="page-item disabled" {% else %}class="page-item" {% endif %}><a class="page-link" href="/?p={{eski}}">Eski</a></li>
                     </ul>
                 </nav>
-
+                {% endif %}
             </div>
 
             <!-- Side widgets-->
+            {% if request.path =="/" or request.path[0:8]=="/article" %}
             <div class="col-lg-4">
                 <!-- Search widget-->
                 <div class="card mb-4">
                     <div class="card-header">Arama</div>
                     <div class="card-body">
                         <div class="input-group">
-                            <input class="form-control" type="text" placeholder="Arama metni giriniz" aria-label="Enter search term..." aria-describedby="button-search" />
+                            <input class="form-control" type="text" placeholder="Arama metni giriniz..." aria-label="Enter search term..." aria-describedby="button-search" />
                             <button class="btn btn-primary" id="button-search" type="button">Ara!</button>
                         </div>
                     </div>
@@ -123,20 +138,21 @@
                     <div class="card-header">Etiketler</div>
                     <div class="card-body">
                         <div class="row">
+                            <!-- etiketler-->
+                            {% set i=0 %} {% for tag in tags %} {% if i%2==0 %}
                             <div class="col-sm-6">
                                 <ul class="list-unstyled mb-0">
-                                    <li><a href="#!">Web Design</a></li>
-                                    <li><a href="#!">HTML</a></li>
-                                    <li><a href="#!">Freebies</a></li>
+                                    <li><a href="/articles/{{tag.name}}">{{tag.name}}</a>({{ tag.count }})</li>
+
                                 </ul>
                             </div>
+                            {% else %}
                             <div class="col-sm-6">
                                 <ul class="list-unstyled mb-0">
-                                    <li><a href="#!">JavaScript</a></li>
-                                    <li><a href="#!">CSS</a></li>
-                                    <li><a href="#!">Tutorials</a></li>
+                                    <li><a href="/articles/{{tag.name}}">{{tag.name}}</a>({{ tag.count }}))/li>
                                 </ul>
                             </div>
+                            {% endif %} {% set i=i+1 %} {% endfor %}
                         </div>
                     </div>
                 </div>
@@ -148,7 +164,9 @@
                 </div>
             </div>
             {% else %}
-            <p class="container"></p>{% endif %} </div>
+            <p class="container"></p>
+            {% endif %}
+        </div>
     </div>
     <!-- Footer-->
     <footer class="py-5 bg-dark">
