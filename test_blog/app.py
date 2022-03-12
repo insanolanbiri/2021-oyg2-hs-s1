@@ -1,5 +1,5 @@
-from crypt import methods
 import os
+from functools import wraps
 
 from flask import (
     Flask,
@@ -11,6 +11,7 @@ from flask import (
     request,
     session,
     url_for,
+    g,
 )
 from flask_sqlalchemy import SQLAlchemy
 from wtforms import (
@@ -34,6 +35,17 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:////" + os.path.join(
 )
 app.config["SECRET_KEY"] = os.urandom(32)
 db = SQLAlchemy(app)
+
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if "logged_in" in session:
+            return f(*args, **kwargs)
+        else:
+            return redirect(url_for("login"))
+
+    return decorated_function
 
 
 class User(db.Model):
@@ -61,8 +73,14 @@ class RegisterForm(Form):
     submit = SubmitField("kayıt")
 
 
-@app.route("/", methods=["GET", "POST"])
-def index():
+class LoginForm(Form):
+    username = StringField("kullanıcı adı")
+    password = PasswordField("şifre")
+    submit = SubmitField("giriş")
+
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
     form = RegisterForm(request.form)
     if form.validate and request.method == "POST":
         username = form.username.data
@@ -72,8 +90,46 @@ def index():
         try:
             db.session.add(kayit)
             db.session.commit()
-            return render_template("index.html", form=form, status="başarılı")
+            return render_template("register.html", form=form, status="başarılı")
         except Exception as e:
-            return render_template("index.html", form=form, status=f"bir şey oldu: {e}")
+            return render_template(
+                "register.html", form=form, status=f"bir şey oldu: {e}"
+            )
     else:
-        return render_template("index.html", form=form, status="")
+        return render_template("register.html", form=form, status="")
+
+
+@app.route("/")
+def index():
+    return render_template("index.html")
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    form = LoginForm(request.form)
+    if form.validate() and request.method == "POST":
+        username = form.username.data
+        password = form.password.data
+        user = User.query.filter_by(username=username).first()
+        if user:
+            if user.password == password:
+                session["logged_in"] = True
+                session["username"] = username
+                return redirect(url_for("auth"))
+            else:
+                pass
+        else:
+            pass
+    return render_template("login.html", form=form)
+
+
+@app.route("/auth")
+@login_required
+def auth():
+    return render_template("auth.html")
+
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("index"))

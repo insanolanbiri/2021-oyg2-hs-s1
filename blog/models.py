@@ -16,6 +16,7 @@ class Article(db.Model):
     title = db.Column(db.String(80))
     content = db.Column(db.Text)
     username = db.Column(db.String(80), db.ForeignKey("user.username"), nullable=False)
+    image_path = db.Column(db.String(255))
     tags = db.relationship("Article_Tag", backref="article", lazy="dynamic")
 
 
@@ -30,6 +31,3 @@ class Article_Tag(db.Model):
     __tablename__ = "article_tag"
     time = db.Column(db.DateTime, db.ForeignKey("article.time"), primary_key=True)
     tag_name = db.Column(db.String(30), db.ForeignKey("tag.name"), primary_key=True)
-
-
-# db sınıfları
