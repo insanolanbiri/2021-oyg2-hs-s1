@@ -9,7 +9,7 @@ int main()
     */
     int i1=3.8;
     float f1=33;
-    char c1='s'; // " olmaz
+    char c1='s'; // `"` olmaz
     long int li1=1e12;
     printf("s=%d\n",32/5);
     printf("s=%f\n",(float)(32/5));
