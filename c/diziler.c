@@ -21,7 +21,7 @@ int main()
     scanf("%s",soyad);
     printf("merhaba %s %s\n",ad,soyad);
     int i=0;
-    printf("aa:%d,%d,%d,%d\n",i++,i++,++i,++i);
+    printf("aa:%d,%d,%d,%d\n",i++,i++,++i,++i)
 
     return 0;
 }
