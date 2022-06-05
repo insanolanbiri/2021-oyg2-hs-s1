@@ -6,7 +6,7 @@ int main()
     scanf("%d",&yas);
     if (yas<=0)
     {
-        printf("doğru düzgün gir\n");
+        fprintf(stderr,"doğru düzgün gir\n");
         return 1;
     }
 

@@ -5,8 +5,8 @@ int main()
     while (i++<5)
     {
         printf("i=%d\n",i);
-        //i++;
+        //i++; // üste de eklenebiliyormuş
     }
-    
+
     return 0;
 }
