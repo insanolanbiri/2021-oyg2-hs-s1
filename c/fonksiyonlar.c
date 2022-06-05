@@ -3,6 +3,7 @@
 /**
  * donus_tipi fonksiyon([parametreler]){olay;[return;]}
 */
+
 void test(int a)
 {
     a+=1;
@@ -29,12 +30,10 @@ int main(int argc, char const *argv[])
     test2(&s2);
     printf("s1=%d;s2=%d\n",s1,s2);
 
-    
     int dizi[5]={20,30,45,60,75};
     printf("dizi[0]=%d\n",dizi[0]);
     test3(dizi);
     printf("dizi[0]=%d\n",dizi[0]);
-
 
     char *isim="eren";
     printf("isim=%d-*-*-%c\n",*isim+1,*isim+1);

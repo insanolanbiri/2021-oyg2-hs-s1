@@ -8,20 +8,17 @@ int main()
     printf("boyut id2 (byte): %d\n",sizeof(id2));
     printf("boyut id3 (byte): %d\n",sizeof(id3));
     printf("eleman id3: %d\n",sizeof(id3)/sizeof(int));
-    printf("%d,%d,%d,%d,%d,%d,%d,%d,%d\n",
+    printf("%d,%d,%d,%d,%d\n",
     sizeof(int),
     sizeof(float),
     sizeof(char),
     sizeof(double),
     sizeof(short)
     );
-    // char dizisi=karakter dizisi=dizge
+    // char dizisi=karakter dizisi=karakter katarı=dizge
     char ad[]="eren";
     char soyad[20];
     scanf("%s",soyad);
     printf("merhaba %s %s\n",ad,soyad);
-    int i=0;
-    printf("aa:%d,%d,%d,%d\n",i++,i++,++i,++i)
-
     return 0;
 }

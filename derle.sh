@@ -1,4 +1,7 @@
 #!/bin/bash
+
+# gcc ile derleyip sorun çıkmazsa binaryi çalıştırıp silen fonksiyon.
+
 if [ "${BASH_SOURCE[0]}" -ef "$0" ]; then
     echo "bunu source ile kullanman gerek dostum"
     exit 1
